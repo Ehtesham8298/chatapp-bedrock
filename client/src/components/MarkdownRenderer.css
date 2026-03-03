@@ -150,3 +150,102 @@
   font-weight: 600;
   color: var(--text-primary);
 }
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+  .message-content th,
+  .message-content td {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .code-block-wrapper {
+    margin: 10px -12px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .code-block-header {
+    padding: 6px 12px;
+  }
+
+  .code-block-wrapper pre,
+  .code-block-wrapper > div {
+    font-size: 12px !important;
+  }
+
+  /* Scrollable code blocks on mobile */
+  .code-block-wrapper pre code {
+    white-space: pre;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .inline-code {
+    font-size: 0.85em;
+    padding: 1px 5px;
+    word-break: break-all;
+  }
+
+  .message-content h1 { font-size: 1.25em; }
+  .message-content h2 { font-size: 1.1em; }
+  .message-content h3 { font-size: 1.05em; }
+
+  .message-content h1,
+  .message-content h2,
+  .message-content h3,
+  .message-content h4 {
+    margin: 14px 0 8px;
+  }
+
+  .message-content p {
+    margin: 8px 0;
+  }
+
+  .message-content ul,
+  .message-content ol {
+    padding-left: 20px;
+  }
+
+  /* Scrollable tables on mobile */
+  .message-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    margin: 10px 0;
+  }
+
+  .message-content th,
+  .message-content td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .message-content blockquote {
+    padding: 6px 12px;
+    margin: 10px 0;
+  }
+
+  .copy-btn {
+    padding: 4px 10px;
+    min-height: 28px;
+  }
+}
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 400px) {
+  .code-block-wrapper {
+    margin: 8px -8px;
+  }
+
+  .message-content th,
+  .message-content td {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}

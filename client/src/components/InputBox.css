@@ -160,8 +160,62 @@
   opacity: 0.6;
 }
 
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+  .input-box-container {
+    padding: 0 16px 14px;
+  }
+}
+
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
   .input-box-container {
-    padding: 0 12px 12px;
+    padding: 0 10px 10px;
+  }
+
+  .input-box {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  .input-box textarea {
+    font-size: 16px; /* Prevents iOS zoom */
+    padding: 4px 0;
+  }
+
+  .send-btn,
+  .stop-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .attach-btn {
+    padding: 6px;
+  }
+
+  .attachment-item img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .input-footer {
+    font-size: 10px;
+    margin-top: 6px;
+  }
+}
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 400px) {
+  .input-box-container {
+    padding: 0 8px 8px;
+  }
+
+  .input-box textarea {
+    font-size: 16px;
+  }
+
+  .attachment-item img {
+    width: 50px;
+    height: 50px;
   }
 }
