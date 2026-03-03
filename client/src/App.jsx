@@ -42,10 +42,17 @@ function App() {
         <div className="main-header">
           {!sidebarOpen && (
             <button className="menu-btn" onClick={() => setSidebarOpen(true)}>
-              &#9776;
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
             </button>
           )}
-          <span className="model-name">Claude Opus 4.6</span>
+          <div className="model-badge">
+            <span className="model-dot"></span>
+            <span className="model-name">Claude Sonnet 4.6</span>
+          </div>
         </div>
         <ChatArea
           messages={activeConversation?.messages || []}
