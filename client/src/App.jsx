@@ -7,6 +7,11 @@ import InputBox from './components/InputBox';
 import Login from './components/Login';
 import './App.css';
 
+const MODELS = [
+  { id: 'us.anthropic.claude-sonnet-4-6', name: 'Claude Sonnet 4.6', tag: 'Smart' },
+  { id: 'us.anthropic.claude-haiku-4-5-20251001', name: 'Claude Haiku 4.5', tag: 'Fast' },
+];
+
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   useEffect(() => {
@@ -22,6 +27,10 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [selectedModel, setSelectedModel] = useState(MODELS[0]);
+  const [showModelDropdown, setShowModelDropdown] = useState(false);
+  const [searchEnabled, setSearchEnabled] = useState(false);
+
   // Check if already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -43,6 +52,14 @@ function App() {
   useEffect(() => {
     setSidebarOpen(!isMobile);
   }, [isMobile]);
+
+  // Close model dropdown on outside click
+  useEffect(() => {
+    if (!showModelDropdown) return;
+    const handleClick = () => setShowModelDropdown(false);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [showModelDropdown]);
 
   const {
     conversations,
@@ -83,14 +100,20 @@ function App() {
     setUser(null);
   }, []);
 
+  const handleSend = useCallback((text, attachments) => {
+    sendMessage(text, attachments, {
+      searchEnabled,
+      modelId: selectedModel.id,
+    });
+  }, [sendMessage, searchEnabled, selectedModel]);
+
   const handleSuggestionClick = useCallback((text) => {
-    sendMessage(text, []);
-  }, [sendMessage]);
+    handleSend(text, []);
+  }, [handleSend]);
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Escape to close sidebar on mobile
       if (e.key === 'Escape' && isMobile && sidebarOpen) {
         setSidebarOpen(false);
       }
@@ -99,7 +122,6 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isMobile, sidebarOpen]);
 
-  // Show loading spinner while checking auth
   if (authLoading) {
     return (
       <div className="auth-loading">
@@ -108,14 +130,12 @@ function App() {
     );
   }
 
-  // Show login page if not authenticated
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
 
   return (
     <div className="app">
-      {/* Mobile backdrop */}
       {isMobile && sidebarOpen && (
         <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
       )}
@@ -141,9 +161,33 @@ function App() {
               </svg>
             </button>
           )}
-          <div className="model-badge">
+          <div className="model-selector" onClick={(e) => { e.stopPropagation(); setShowModelDropdown(!showModelDropdown); }}>
             <span className="model-dot"></span>
-            <span className="model-name">Claude Sonnet 4.6</span>
+            <span className="model-name">{selectedModel.name}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+            {showModelDropdown && (
+              <div className="model-dropdown">
+                {MODELS.map((model) => (
+                  <button
+                    key={model.id}
+                    className={`model-option ${model.id === selectedModel.id ? 'active' : ''}`}
+                    onClick={(e) => { e.stopPropagation(); setSelectedModel(model); setShowModelDropdown(false); }}
+                  >
+                    <div className="model-option-info">
+                      <span className="model-option-name">{model.name}</span>
+                      <span className="model-option-tag">{model.tag}</span>
+                    </div>
+                    {model.id === selectedModel.id && (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <ChatArea
@@ -152,9 +196,11 @@ function App() {
           onSuggestionClick={handleSuggestionClick}
         />
         <InputBox
-          onSend={sendMessage}
+          onSend={handleSend}
           isStreaming={isStreaming}
           onStop={stopStreaming}
+          searchEnabled={searchEnabled}
+          onToggleSearch={() => setSearchEnabled(!searchEnabled)}
         />
       </main>
     </div>

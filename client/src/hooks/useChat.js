@@ -4,11 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Build API content blocks from message content
 function toApiContent(message) {
-  // If content is a string (text only), return as-is
   if (typeof message.content === 'string') {
     return message.content;
   }
-  // If content is array (multimodal), convert for Bedrock API
   return message.content.map(block => {
     if (block.type === 'image') {
       return {
@@ -20,7 +18,7 @@ function toApiContent(message) {
         },
       };
     }
-    return block; // text blocks pass through
+    return block;
   });
 }
 
@@ -28,7 +26,7 @@ export function useChat({ activeConversation, addMessage, updateLastMessage, cre
   const [isStreaming, setIsStreaming] = useState(false);
   const abortControllerRef = useRef(null);
 
-  const sendMessage = useCallback(async (text, attachments = []) => {
+  const sendMessage = useCallback(async (text, attachments = [], options = {}) => {
     let conversationId = activeConversation?.id;
     if (!conversationId) {
       conversationId = createConversation();
@@ -39,12 +37,17 @@ export function useChat({ activeConversation, addMessage, updateLastMessage, cre
     if (attachments.length > 0) {
       content = [];
       attachments.forEach(att => {
-        content.push({
-          type: 'image',
-          mediaType: att.mediaType,
-          base64: att.base64,
-          preview: att.preview,
-        });
+        if (att.type === 'pdf') {
+          // PDF text goes as a text block
+          content.push({ type: 'text', text: `[PDF: ${att.name}]\n${att.pdfText}` });
+        } else {
+          content.push({
+            type: 'image',
+            mediaType: att.mediaType,
+            base64: att.base64,
+            preview: att.preview,
+          });
+        }
       });
       if (text) {
         content.push({ type: 'text', text });
@@ -62,7 +65,6 @@ export function useChat({ activeConversation, addMessage, updateLastMessage, cre
     setIsStreaming(true);
     abortControllerRef.current = new AbortController();
 
-    // Build API messages (convert image blocks to Bedrock format)
     const apiMessages = [
       ...(activeConversation?.messages || []).map(m => ({
         role: m.role,
@@ -86,6 +88,8 @@ export function useChat({ activeConversation, addMessage, updateLastMessage, cre
           setIsStreaming(false);
         },
         signal: abortControllerRef.current.signal,
+        searchEnabled: options.searchEnabled || false,
+        modelId: options.modelId || undefined,
       });
     } catch (error) {
       if (error.name !== 'AbortError') {
@@ -93,7 +97,7 @@ export function useChat({ activeConversation, addMessage, updateLastMessage, cre
       }
       setIsStreaming(false);
     }
-  }, [activeConversation, addMessage, updateLastMessage, createConversation]);
+  }, [activeConversation, addMessage, updateLastMessage, createConversation, saveConversation]);
 
   const stopStreaming = useCallback(() => {
     abortControllerRef.current?.abort();

@@ -23,7 +23,7 @@ console.log('Bedrock config:', {
 
 const client = new BedrockRuntimeClient(clientConfig);
 
-async function streamChatCompletion(messages, systemPrompt, onChunk) {
+async function streamChatCompletion(messages, systemPrompt, onChunk, modelId) {
   const requestBody = {
     anthropic_version: 'bedrock-2023-05-31',
     max_tokens: 4096,
@@ -35,7 +35,7 @@ async function streamChatCompletion(messages, systemPrompt, onChunk) {
   }
 
   const command = new InvokeModelWithResponseStreamCommand({
-    modelId: process.env.BEDROCK_MODEL_ID || 'us.anthropic.claude-sonnet-4-6',
+    modelId: modelId || process.env.BEDROCK_MODEL_ID || 'us.anthropic.claude-sonnet-4-6',
     contentType: 'application/json',
     accept: 'application/json',
     body: JSON.stringify(requestBody),

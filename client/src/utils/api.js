@@ -6,7 +6,7 @@ function getAuthHeaders() {
   return { 'x-api-key': import.meta.env.VITE_API_KEY };
 }
 
-export async function streamChat(messages, { onToken, onComplete, onError, signal }) {
+export async function streamChat(messages, { onToken, onComplete, onError, signal, searchEnabled, modelId }) {
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: {
@@ -15,7 +15,9 @@ export async function streamChat(messages, { onToken, onComplete, onError, signa
     },
     body: JSON.stringify({
       messages,
-      systemPrompt: 'You are Claude Sonnet 4.6 by Anthropic, running via AWS Bedrock. When asked about your version or model, always say you are Claude Sonnet 4.6. Be helpful, respond clearly and concisely. Use markdown formatting when appropriate.',
+      systemPrompt: 'You are Claude by Anthropic, running via AWS Bedrock. Be helpful, respond clearly and concisely. Use markdown formatting when appropriate.',
+      searchEnabled: searchEnabled || false,
+      modelId: modelId || undefined,
     }),
     signal,
   });
@@ -74,6 +76,17 @@ export async function streamChat(messages, { onToken, onComplete, onError, signa
       onError?.(err);
     }
   }
+}
+
+// Parse PDF
+export async function parsePDF(base64) {
+  const res = await fetch('/api/parse-pdf', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+    body: JSON.stringify({ base64 }),
+  });
+  if (!res.ok) throw new Error('Failed to parse PDF');
+  return res.json();
 }
 
 // Conversation API calls
