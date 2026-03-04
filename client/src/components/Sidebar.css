@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid rgba(255,255,255,0.04);
-  transition: width 0.3s ease, opacity 0.3s ease;
+  transition: width 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
   overflow: hidden;
 }
 
@@ -161,6 +161,59 @@
   border-top: 1px solid rgba(255,255,255,0.04);
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-hover);
+}
+
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #9b8cff);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.user-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logout-btn:hover {
+  color: var(--red);
+  background: rgba(239, 68, 68, 0.1);
+}
+
 .footer-item {
   display: flex;
   align-items: center;
@@ -175,13 +228,46 @@
   opacity: 0.5;
 }
 
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
   .sidebar {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
     z-index: 100;
+    width: 300px;
     box-shadow: var(--shadow-lg);
+    transform: translateX(0);
+  }
+
+  .sidebar.closed {
+    width: 300px;
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+
+  .conversation-item {
+    padding: 12px 14px;
+  }
+
+  /* Always show delete on mobile (no hover) */
+  .delete-btn {
+    opacity: 0.6;
+  }
+
+  .new-chat-btn {
+    padding: 12px 16px;
+  }
+}
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 400px) {
+  .sidebar {
+    width: 85vw;
+  }
+
+  .sidebar.closed {
+    width: 85vw;
   }
 }

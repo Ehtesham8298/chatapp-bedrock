@@ -24,7 +24,7 @@ function toApiContent(message) {
   });
 }
 
-export function useChat({ activeConversation, addMessage, updateLastMessage, createConversation }) {
+export function useChat({ activeConversation, addMessage, updateLastMessage, createConversation, saveConversation }) {
   const [isStreaming, setIsStreaming] = useState(false);
   const abortControllerRef = useRef(null);
 
@@ -78,6 +78,7 @@ export function useChat({ activeConversation, addMessage, updateLastMessage, cre
         },
         onComplete: () => {
           setIsStreaming(false);
+          saveConversation(conversationId);
         },
         onError: (error) => {
           console.error('Stream error:', error);

@@ -1,13 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useConversations } from './hooks/useConversations';
 import { useChat } from './hooks/useChat';
 import Sidebar from './components/Sidebar';
 import ChatArea from './components/ChatArea';
 import InputBox from './components/InputBox';
+import Login from './components/Login';
 import './App.css';
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return isMobile;
+}
+
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Check if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setAuthLoading(false);
+      return;
+    }
+    fetch('/api/auth/me', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(data => setUser(data.user))
+      .catch(() => {
+        localStorage.removeItem('token');
+      })
+      .finally(() => setAuthLoading(false));
+  }, []);
+
+  useEffect(() => {
+    setSidebarOpen(!isMobile);
+  }, [isMobile]);
 
   const {
     conversations,
@@ -18,25 +54,66 @@ function App() {
     addMessage,
     updateLastMessage,
     deleteConversation,
-  } = useConversations();
+    saveConversation,
+  } = useConversations(!!user);
 
   const { sendMessage, isStreaming, stopStreaming } = useChat({
     activeConversation,
     addMessage,
     updateLastMessage,
     createConversation,
+    saveConversation,
   });
+
+  const handleSelectConversation = useCallback((id) => {
+    setActiveConversationId(id);
+    if (isMobile) setSidebarOpen(false);
+  }, [isMobile, setActiveConversationId]);
+
+  const handleNewChat = useCallback(() => {
+    createConversation();
+    if (isMobile) setSidebarOpen(false);
+  }, [isMobile, createConversation]);
+
+  const handleLogin = useCallback((userData) => {
+    setUser(userData);
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('token');
+    setUser(null);
+  }, []);
+
+  // Show loading spinner while checking auth
+  if (authLoading) {
+    return (
+      <div className="auth-loading">
+        <div className="auth-spinner"></div>
+      </div>
+    );
+  }
+
+  // Show login page if not authenticated
+  if (!user) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   return (
     <div className="app">
+      {/* Mobile backdrop */}
+      {isMobile && sidebarOpen && (
+        <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
+      )}
       <Sidebar
         conversations={conversations}
         activeId={activeConversationId}
-        onSelect={setActiveConversationId}
-        onNew={createConversation}
+        onSelect={handleSelectConversation}
+        onNew={handleNewChat}
         onDelete={deleteConversation}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
+        username={user.username}
+        onLogout={handleLogout}
       />
       <main className="main">
         <div className="main-header">

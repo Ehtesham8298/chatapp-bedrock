@@ -1,8 +1,20 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const cors = require('cors');
+
+// Ensure data directories exist
+const dataDir = path.join(__dirname, 'data');
+const chatsDir = path.join(dataDir, 'chats');
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
+if (!fs.existsSync(chatsDir)) fs.mkdirSync(chatsDir);
+if (!fs.existsSync(path.join(dataDir, 'users.json'))) {
+  fs.writeFileSync(path.join(dataDir, 'users.json'), '[]');
+}
 const chatRouter = require('./routes/chat');
+const authRouter = require('./routes/auth');
+const conversationsRouter = require('./routes/conversations');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -19,6 +31,8 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(express.json({ limit: '20mb' }));
 
 // API routes
+app.use('/api/auth', authRouter);
+app.use('/api/conversations', conversationsRouter);
 app.use('/api', chatRouter);
 
 // Serve React build in production

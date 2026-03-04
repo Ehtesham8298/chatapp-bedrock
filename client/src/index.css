@@ -69,3 +69,24 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #444;
 }
+
+/* Mobile viewport fix for address bar */
+@supports (height: 100dvh) {
+  body, #root {
+    height: 100dvh;
+  }
+}
+
+/* Prevent zoom on input focus on iOS */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  button, .conversation-item {
+    min-height: 44px;
+  }
+}

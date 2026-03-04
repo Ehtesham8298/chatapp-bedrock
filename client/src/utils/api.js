@@ -1,9 +1,17 @@
+function getAuthHeaders() {
+  const token = localStorage.getItem('token');
+  if (token) {
+    return { Authorization: `Bearer ${token}` };
+  }
+  return { 'x-api-key': import.meta.env.VITE_API_KEY };
+}
+
 export async function streamChat(messages, { onToken, onComplete, onError, signal }) {
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': import.meta.env.VITE_API_KEY,
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({
       messages,
@@ -66,4 +74,46 @@ export async function streamChat(messages, { onToken, onComplete, onError, signa
       onError?.(err);
     }
   }
+}
+
+// Conversation API calls
+export async function fetchConversations() {
+  const res = await fetch('/api/conversations', { headers: getAuthHeaders() });
+  if (!res.ok) throw new Error('Failed to fetch conversations');
+  return res.json();
+}
+
+export async function fetchConversation(id) {
+  const res = await fetch(`/api/conversations/${id}`, { headers: getAuthHeaders() });
+  if (!res.ok) throw new Error('Failed to fetch conversation');
+  return res.json();
+}
+
+export async function createConversationAPI(id, title) {
+  const res = await fetch('/api/conversations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+    body: JSON.stringify({ id, title }),
+  });
+  if (!res.ok) throw new Error('Failed to create conversation');
+  return res.json();
+}
+
+export async function updateConversationAPI(id, data) {
+  const res = await fetch(`/api/conversations/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to update conversation');
+  return res.json();
+}
+
+export async function deleteConversationAPI(id) {
+  const res = await fetch(`/api/conversations/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) throw new Error('Failed to delete conversation');
+  return res.json();
 }
