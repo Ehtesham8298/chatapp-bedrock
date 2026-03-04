@@ -3,10 +3,10 @@
   gap: 14px;
   padding: 20px 0;
   align-items: flex-start;
-  animation: fadeIn 0.3s ease;
+  animation: msgFadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
+@keyframes msgFadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
@@ -62,8 +62,8 @@
 
 .message-actions {
   display: flex;
-  gap: 4px;
-  margin-top: 8px;
+  gap: 6px;
+  margin-top: 10px;
   opacity: 0;
   transition: opacity var(--transition);
 }
@@ -77,18 +77,30 @@
   border: 1px solid rgba(255,255,255,0.06);
   color: var(--text-muted);
   cursor: pointer;
-  padding: 6px;
+  padding: 5px 10px;
   border-radius: var(--radius-sm);
   transition: all var(--transition);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 5px;
+  font-family: inherit;
+  font-size: 12px;
 }
 
 .action-btn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
   border-color: rgba(255,255,255,0.1);
+}
+
+.action-btn.copied {
+  color: var(--green);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.action-label {
+  font-size: 12px;
 }
 
 .message-images {
@@ -103,7 +115,7 @@
   max-height: 300px;
   border-radius: var(--radius-md);
   object-fit: cover;
-  cursor: pointer;
+  cursor: zoom-in;
   transition: all var(--transition);
   border: 1px solid rgba(255,255,255,0.05);
 }
@@ -111,6 +123,7 @@
 .message-image:hover {
   transform: scale(1.02);
   border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .cursor-blink {
@@ -197,8 +210,7 @@
   }
 
   .action-btn {
-    padding: 8px;
-    min-width: 32px;
+    padding: 8px 12px;
     min-height: 32px;
   }
 

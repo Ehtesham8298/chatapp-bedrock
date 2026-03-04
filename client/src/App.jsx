@@ -22,7 +22,6 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
-
   // Check if already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -84,6 +83,22 @@ function App() {
     setUser(null);
   }, []);
 
+  const handleSuggestionClick = useCallback((text) => {
+    sendMessage(text, []);
+  }, [sendMessage]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Escape to close sidebar on mobile
+      if (e.key === 'Escape' && isMobile && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMobile, sidebarOpen]);
+
   // Show loading spinner while checking auth
   if (authLoading) {
     return (
@@ -134,6 +149,7 @@ function App() {
         <ChatArea
           messages={activeConversation?.messages || []}
           isStreaming={isStreaming}
+          onSuggestionClick={handleSuggestionClick}
         />
         <InputBox
           onSend={sendMessage}

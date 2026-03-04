@@ -4,6 +4,7 @@
   justify-content: center;
   min-height: 100vh;
   background: var(--bg-primary);
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(124, 108, 255, 0.08) 0%, transparent 60%);
   padding: 20px;
 }
 
@@ -15,6 +16,13 @@
   border-radius: var(--radius-lg);
   padding: 40px 32px;
   text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: loginSlide 0.4s ease;
+}
+
+@keyframes loginSlide {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .login-logo {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import MarkdownRenderer from './MarkdownRenderer';
 import './MessageBubble.css';
 
-function MessageBubble({ role, content, isStreaming }) {
+function MessageBubble({ role, content, isStreaming, onImageClick }) {
   const [copied, setCopied] = useState(false);
 
   const isMultimodal = Array.isArray(content);
@@ -55,7 +55,13 @@ function MessageBubble({ role, content, isStreaming }) {
               {images.length > 0 && (
                 <div className="message-images">
                   {images.map((img, i) => (
-                    <img key={i} src={img.preview} alt="Uploaded" className="message-image" />
+                    <img
+                      key={i}
+                      src={img.preview}
+                      alt="Uploaded"
+                      className="message-image"
+                      onClick={() => onImageClick?.(img.preview)}
+                    />
                   ))}
                 </div>
               )}
@@ -65,16 +71,22 @@ function MessageBubble({ role, content, isStreaming }) {
         </div>
         {role === 'assistant' && content && content.length > 0 && !isStreaming && (
           <div className="message-actions">
-            <button className="action-btn" onClick={handleCopy} title="Copy">
+            <button className={`action-btn ${copied ? 'copied' : ''}`} onClick={handleCopy} title={copied ? 'Copied!' : 'Copy'}>
               {copied ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" strokeLinecap="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="action-label">Copied</span>
+                </>
               ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                </svg>
+                <>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                  </svg>
+                  <span className="action-label">Copy</span>
+                </>
               )}
             </button>
           </div>
