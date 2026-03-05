@@ -1,9 +1,17 @@
 import { useState } from 'react';
 import MarkdownRenderer from './MarkdownRenderer';
+import { useToast } from './Toast';
 import './MessageBubble.css';
 
-function MessageBubble({ role, content, isStreaming, onImageClick }) {
+function formatTime(timestamp) {
+  if (!timestamp) return '';
+  const d = new Date(timestamp);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function MessageBubble({ role, content, isStreaming, onImageClick, timestamp }) {
   const [copied, setCopied] = useState(false);
+  const addToast = useToast();
 
   const isMultimodal = Array.isArray(content);
   const textContent = isMultimodal
@@ -17,6 +25,7 @@ function MessageBubble({ role, content, isStreaming, onImageClick }) {
     const text = typeof content === 'string' ? content : textContent;
     navigator.clipboard.writeText(text);
     setCopied(true);
+    addToast?.('Copied to clipboard', 'success');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -35,7 +44,8 @@ function MessageBubble({ role, content, isStreaming, onImageClick }) {
       </div>
       <div className="message-body">
         <div className="message-role-label">
-          {role === 'user' ? 'You' : 'Claude'}
+          <span>{role === 'user' ? 'You' : 'Claude'}</span>
+          {timestamp && <span className="message-time">{formatTime(timestamp)}</span>}
         </div>
         <div className="message-content">
           {role === 'assistant' ? (

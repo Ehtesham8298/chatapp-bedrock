@@ -197,27 +197,53 @@
   font-weight: 500;
 }
 
+.conv-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--transition);
+  flex-shrink: 0;
+}
+
+.conversation-item:hover .conv-actions {
+  opacity: 1;
+}
+
+.rename-btn,
 .delete-btn {
   background: none;
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 4px;
+  padding: 5px;
   border-radius: var(--radius-sm);
-  opacity: 0;
   transition: all var(--transition);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.conversation-item:hover .delete-btn {
-  opacity: 1;
+.rename-btn:hover {
+  color: var(--accent);
+  background: var(--accent-glow);
 }
 
 .delete-btn:hover {
   color: var(--red);
   background: rgba(239, 68, 68, 0.1);
+}
+
+.rename-input {
+  flex: 1;
+  background: var(--bg-primary);
+  border: 1px solid rgba(124, 108, 255, 0.4);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  padding: 2px 6px;
+  outline: none;
+  min-width: 0;
 }
 
 .sidebar-footer {
@@ -315,8 +341,8 @@
     padding: 12px 14px;
   }
 
-  /* Always show delete on mobile (no hover) */
-  .delete-btn {
+  /* Always show actions on mobile (no hover) */
+  .conv-actions {
     opacity: 0.6;
   }
 

@@ -69,6 +69,7 @@ function ChatArea({ messages, isStreaming, onSuggestionClick }) {
             key={msg.id}
             role={msg.role}
             content={msg.content}
+            timestamp={msg.timestamp}
             isStreaming={isStreaming && msg === messages[messages.length - 1] && msg.role === 'assistant'}
             onImageClick={setLightboxImg}
           />

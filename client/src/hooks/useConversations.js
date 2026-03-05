@@ -123,6 +123,13 @@ export function useConversations(isLoggedIn) {
     }
   }, [loadedMessages, conversations]);
 
+  const renameConversation = useCallback((id, newTitle) => {
+    setConversations(prev => prev.map(c => c.id === id ? { ...c, title: newTitle } : c));
+    updateConversationAPI(id, { title: newTitle }).catch(err =>
+      console.error('Failed to rename conversation:', err)
+    );
+  }, []);
+
   const deleteConversation = useCallback((id) => {
     setConversations(prev => prev.filter(c => c.id !== id));
     setLoadedMessages(prev => {
@@ -147,6 +154,7 @@ export function useConversations(isLoggedIn) {
     addMessage,
     updateLastMessage,
     deleteConversation,
+    renameConversation,
     saveConversation,
   };
 }

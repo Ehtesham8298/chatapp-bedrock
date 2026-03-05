@@ -46,6 +46,15 @@
   color: var(--text-primary);
   margin-bottom: 6px;
   letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.message-time {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
 }
 
 .message-content {

@@ -56,10 +56,10 @@ export function useChat({ activeConversation, addMessage, updateLastMessage, cre
       content = text;
     }
 
-    const userMessage = { id: uuidv4(), role: 'user', content };
+    const userMessage = { id: uuidv4(), role: 'user', content, timestamp: Date.now() };
     addMessage(conversationId, userMessage);
 
-    const assistantMessage = { id: uuidv4(), role: 'assistant', content: '' };
+    const assistantMessage = { id: uuidv4(), role: 'assistant', content: '', timestamp: Date.now() };
     addMessage(conversationId, assistantMessage);
 
     setIsStreaming(true);

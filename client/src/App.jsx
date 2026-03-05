@@ -70,6 +70,7 @@ function App() {
     addMessage,
     updateLastMessage,
     deleteConversation,
+    renameConversation,
     saveConversation,
   } = useConversations(!!user);
 
@@ -145,6 +146,7 @@ function App() {
         onSelect={handleSelectConversation}
         onNew={handleNewChat}
         onDelete={deleteConversation}
+        onRename={renameConversation}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         username={user.username}
