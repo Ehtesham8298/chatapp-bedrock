@@ -9,7 +9,12 @@ function formatTime(timestamp) {
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-function MessageBubble({ role, content, isStreaming, onImageClick, timestamp }) {
+function wordCount(text) {
+  if (!text) return 0;
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function MessageBubble({ role, content, isStreaming, onImageClick, timestamp, onRegenerate, isLast }) {
   const [copied, setCopied] = useState(false);
   const addToast = useToast();
 
@@ -28,6 +33,8 @@ function MessageBubble({ role, content, isStreaming, onImageClick, timestamp }) 
     addToast?.('Copied to clipboard', 'success');
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const words = wordCount(typeof content === 'string' ? content : textContent);
 
   return (
     <div className={`message ${role}`}>
@@ -81,7 +88,7 @@ function MessageBubble({ role, content, isStreaming, onImageClick, timestamp }) 
         </div>
         {role === 'assistant' && content && content.length > 0 && !isStreaming && (
           <div className="message-actions">
-            <button className={`action-btn ${copied ? 'copied' : ''}`} onClick={handleCopy} title={copied ? 'Copied!' : 'Copy'}>
+            <button className={`action-btn ${copied ? 'copied' : ''}`} onClick={handleCopy} title="Copy">
               {copied ? (
                 <>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -99,6 +106,18 @@ function MessageBubble({ role, content, isStreaming, onImageClick, timestamp }) 
                 </>
               )}
             </button>
+            {isLast && onRegenerate && (
+              <button className="action-btn" onClick={onRegenerate} title="Regenerate">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <polyline points="23 4 23 10 17 10" />
+                  <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
+                </svg>
+                <span className="action-label">Regenerate</span>
+              </button>
+            )}
+            {words > 0 && (
+              <span className="word-count">{words} words</span>
+            )}
           </div>
         )}
       </div>

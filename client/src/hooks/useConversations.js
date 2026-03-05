@@ -130,6 +130,14 @@ export function useConversations(isLoggedIn) {
     );
   }, []);
 
+  const removeLastMessages = useCallback((conversationId, count) => {
+    setLoadedMessages(prev => {
+      const msgs = [...(prev[conversationId] || [])];
+      const updated = msgs.slice(0, msgs.length - count);
+      return { ...prev, [conversationId]: updated };
+    });
+  }, []);
+
   const deleteConversation = useCallback((id) => {
     setConversations(prev => prev.filter(c => c.id !== id));
     setLoadedMessages(prev => {
@@ -155,6 +163,7 @@ export function useConversations(isLoggedIn) {
     updateLastMessage,
     deleteConversation,
     renameConversation,
+    removeLastMessages,
     saveConversation,
   };
 }

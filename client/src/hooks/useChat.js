@@ -90,6 +90,7 @@ export function useChat({ activeConversation, addMessage, updateLastMessage, cre
         signal: abortControllerRef.current.signal,
         searchEnabled: options.searchEnabled || false,
         modelId: options.modelId || undefined,
+        systemPrompt: options.systemPrompt || undefined,
       });
     } catch (error) {
       if (error.name !== 'AbortError') {

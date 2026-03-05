@@ -6,7 +6,7 @@ function getAuthHeaders() {
   return { 'x-api-key': import.meta.env.VITE_API_KEY };
 }
 
-export async function streamChat(messages, { onToken, onComplete, onError, signal, searchEnabled, modelId }) {
+export async function streamChat(messages, { onToken, onComplete, onError, signal, searchEnabled, modelId, systemPrompt }) {
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: {
@@ -15,7 +15,7 @@ export async function streamChat(messages, { onToken, onComplete, onError, signa
     },
     body: JSON.stringify({
       messages,
-      systemPrompt: 'You are Claude by Anthropic, running via AWS Bedrock. Be helpful, respond clearly and concisely. Use markdown formatting when appropriate.',
+      systemPrompt: systemPrompt || 'You are Claude by Anthropic, running via AWS Bedrock. Be helpful, respond clearly and concisely. Use markdown formatting when appropriate.',
       searchEnabled: searchEnabled || false,
       modelId: modelId || undefined,
     }),

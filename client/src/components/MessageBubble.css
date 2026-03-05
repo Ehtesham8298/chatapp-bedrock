@@ -71,10 +71,17 @@
 
 .message-actions {
   display: flex;
+  align-items: center;
   gap: 6px;
   margin-top: 10px;
   opacity: 0;
   transition: opacity var(--transition);
+}
+
+.word-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: auto;
 }
 
 .message:hover .message-actions {
