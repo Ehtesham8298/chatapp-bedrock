@@ -1,0 +1,114 @@
+import { useEffect, useRef, useState, useCallback } from 'react';
+import MessageBubble from './MessageBubble';
+import './ChatArea.css';
+
+const CHIPS = [
+  { icon: '\u2726', text: 'Explain a concept' },
+  { icon: '\u2328', text: 'Write some code' },
+  { icon: '\u270E', text: 'Help me write' },
+  { icon: '\u25CE', text: 'Analyze something' },
+];
+
+function ChatArea({ messages, isStreaming, onSuggestionClick, onRegenerate, onExportChat }) {
+  const bottomRef = useRef(null);
+  const scrollRef = useRef(null);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const [lightboxImg, setLightboxImg] = useState(null);
+
+  const scrollToBottom = useCallback(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    setShowScrollBtn(distFromBottom > 150);
+  }, []);
+
+  if (messages.length === 0) {
+    return (
+      <div className="chat-area empty">
+        <div className="empty-state">
+          <div className="empty-icon-wrap">
+            <div className="empty-icon-ring-2"></div>
+            <div className="empty-icon-ring"></div>
+            <div className="empty-icon">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+                <path d="M12 2a10 10 0 0110 10c0 5.523-4.477 10-10 10a9.956 9.956 0 01-4.708-1.175L2 22l1.176-5.29A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2z" />
+                <path d="M8 12h.01M12 12h.01M16 12h.01" strokeWidth="2.5" />
+              </svg>
+            </div>
+          </div>
+          <h1>What can I help with?</h1>
+          <p className="empty-subtitle">Ask me anything — coding, writing, analysis, math, or just have a conversation</p>
+          <div className="empty-chips">
+            {CHIPS.map((c) => (
+              <button key={c.text} className="empty-chip" onClick={() => onSuggestionClick && onSuggestionClick(c.text)}>
+                <span>{c.icon}</span>
+                {c.text}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="chat-area" ref={scrollRef} onScroll={handleScroll}>
+      <div className="messages-container">
+        {messages.map((msg) => (
+          <MessageBubble
+            key={msg.id}
+            role={msg.role}
+            content={msg.content}
+            timestamp={msg.timestamp}
+            isStreaming={isStreaming && msg === messages[messages.length - 1] && msg.role === 'assistant'}
+            onImageClick={setLightboxImg}
+            onRegenerate={onRegenerate}
+            isLast={msg === messages[messages.length - 1] && msg.role === 'assistant'}
+          />
+        ))}
+        <div ref={bottomRef} />
+      </div>
+
+      {messages.length > 0 && onExportChat && (
+        <button className="export-btn" onClick={onExportChat} title="Export chat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Export
+        </button>
+      )}
+
+      {showScrollBtn && (
+        <button className="scroll-bottom-btn" onClick={scrollToBottom}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+      )}
+
+      {lightboxImg && (
+        <div className="lightbox" onClick={() => setLightboxImg(null)}>
+          <button className="lightbox-close" onClick={() => setLightboxImg(null)}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+          <img src={lightboxImg} alt="Full size" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default ChatArea;

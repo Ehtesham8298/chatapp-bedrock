@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #050508;
+  --bg-secondary: #08080f;
+  --bg-sidebar: #070710;
+  --bg-input: #0d0d1a;
+  --bg-hover: #101020;
+  --bg-card: #0c0c18;
+  --bg-elevated: #111124;
+  --text-primary: #f0f0f8;
+  --text-secondary: #9090b0;
+  --text-muted: #3a3a5c;
+  --border: rgba(255,255,255,0.055);
+  --border-subtle: rgba(255,255,255,0.025);
+  --border-medium: rgba(255,255,255,0.08);
+  --accent: #7c6cff;
+  --accent-light: #a08fff;
+  --accent-hover: #6a5ae0;
+  --accent-dim: rgba(124,108,255,0.08);
+  --accent-glow: rgba(124,108,255,0.12);
+  --accent-glow-strong: rgba(124,108,255,0.22);
+  --green: #10b981;
+  --green-glow: rgba(16,185,129,0.15);
+  --red: #ef4444;
+  --red-glow: rgba(239,68,68,0.12);
+  --scrollbar-thumb: #16162a;
+  --code-bg: #07070f;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.7);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.75);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.85);
+  --shadow-xl: 0 32px 80px rgba(0,0,0,0.9);
+  --shadow-glow: 0 0 80px rgba(124,108,255,0.06);
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-2xl: 32px;
+  --transition: 0.16s cubic-bezier(0.4,0,0.2,1);
+  --transition-slow: 0.3s cubic-bezier(0.4,0,0.2,1);
+  --transition-spring: 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root { height: 100vh; }
+
+::selection { background: rgba(124,108,255,0.35); color: white; }
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #222240; }
+
+@supports (height: 100dvh) { body, #root { height: 100dvh; } }
+@media (max-width: 768px) { input, textarea, select { font-size: 16px !important; } }
+@media (pointer: coarse) { button, .conversation-item { min-height: 44px; } }

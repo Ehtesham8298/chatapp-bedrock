@@ -1,0 +1,285 @@
+.camera-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.camera-modal {
+  width: 100%;
+  max-width: 560px;
+  background: rgba(13, 13, 20, 0.95);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(124,108,255,0.06);
+  animation: modalUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalUp {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.camera-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.camera-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.camera-title svg {
+  color: var(--accent);
+}
+
+.camera-close {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.camera-close:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+
+.camera-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: #080810;
+  overflow: hidden;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.camera-video.mirror {
+  transform: scaleX(-1);
+}
+
+.camera-captured {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: snapFlash 0.2s ease;
+}
+
+@keyframes snapFlash {
+  0% { filter: brightness(3); }
+  100% { filter: brightness(1); }
+}
+
+.camera-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #080810;
+}
+
+.camera-spinner {
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(124,108,255,0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.camera-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #080810;
+  color: var(--text-muted);
+  padding: 24px;
+}
+
+.camera-error svg {
+  opacity: 0.3;
+}
+
+.camera-error p {
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.camera-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 20px 24px;
+  background: rgba(0,0,0,0.3);
+}
+
+.cam-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  font-family: inherit;
+}
+
+/* Shutter button */
+.shutter-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 3px solid rgba(255,255,255,0.5) !important;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.shutter-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.18);
+  border-color: white !important;
+  transform: scale(1.06);
+}
+
+.shutter-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.shutter-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.shutter-inner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: white;
+  transition: all var(--transition);
+}
+
+.shutter-btn:hover:not(:disabled) .shutter-inner {
+  width: 42px;
+  height: 42px;
+}
+
+/* Flip button */
+.flip-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: var(--text-secondary);
+}
+
+.flip-btn:hover {
+  background: rgba(255,255,255,0.14);
+  color: var(--text-primary);
+  transform: rotate(180deg);
+}
+
+/* Retake / Use buttons */
+.retake-btn {
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.retake-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+
+.use-btn {
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c6cff, #5b4fe0);
+  border: none !important;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(124,108,255,0.3);
+}
+
+.use-btn:hover {
+  background: linear-gradient(135deg, #8b7dff, #6a5ae0);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124,108,255,0.4);
+}
+
+@media (max-width: 768px) {
+  .camera-modal {
+    max-width: 100%;
+    border-radius: 16px;
+  }
+
+  .camera-preview {
+    aspect-ratio: 3/4;
+  }
+
+  .shutter-btn {
+    width: 70px;
+    height: 70px;
+  }
+
+  .shutter-inner {
+    width: 54px;
+    height: 54px;
+  }
+}
